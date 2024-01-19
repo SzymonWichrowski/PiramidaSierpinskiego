@@ -35,7 +35,49 @@ def czworoscian_foremny(wierz1, wierz2, wierz3, wierz4):
     trojkat_rownoboczny(wierz1, wierz2, wierz4)
     #glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-def render(time):
+def podzial(wierz1, wierz2, wierz3, wierz4, n):
+    wierz12 = [0.0, 0.0, 0.0]
+    wierz23 = [0.0, 0.0, 0.0]
+    wierz13 = [0.0, 0.0, 0.0]
+    wierz14 = [0.0, 0.0, 0.0]
+    wierz24 = [0.0, 0.0, 0.0]
+    wierz34 = [0.0, 0.0, 0.0]
+    if (n > 0):
+        #wierzcholek pomiedzy wierz1 i wierz2
+        wierz12[0] = (wierz1[0] + wierz2[0]) / 2
+        wierz12[1] = (wierz1[1] + wierz2[1]) / 2
+        wierz12[2] = (wierz1[2] + wierz2[2]) / 2
+        #wierzcholek pomiedzy wierz2 i wierz3
+        wierz23[0] = (wierz3[0] + wierz2[0]) / 2
+        wierz23[1] = (wierz3[1] + wierz2[1]) / 2
+        wierz23[2] = (wierz3[2] + wierz2[2]) / 2
+        # wierzcholek pomiedzy wierz1 i wierz3
+        wierz13[0] = (wierz1[0] + wierz3[0]) / 2
+        wierz13[1] = (wierz1[1] + wierz3[1]) / 2
+        wierz13[2] = (wierz1[2] + wierz3[2]) / 2
+        # wierzcholek pomiedzy wierz1 i wierz4
+        wierz14[0] = (wierz1[0] + wierz4[0]) / 2
+        wierz14[1] = (wierz1[1] + wierz4[1]) / 2
+        wierz14[2] = (wierz1[2] + wierz4[2]) / 2
+        # wierzcholek pomiedzy wierz2 i wierz4
+        wierz24[0] = (wierz4[0] + wierz2[0]) / 2
+        wierz24[1] = (wierz4[1] + wierz2[1]) / 2
+        wierz24[2] = (wierz4[2] + wierz2[2]) / 2
+        # wierzcholek pomiedzy wierz3 i wierz4
+        wierz34[0] = (wierz4[0] + wierz3[0]) / 2
+        wierz34[1] = (wierz4[1] + wierz3[1]) / 2
+        wierz34[2] = (wierz4[2] + wierz3[2]) / 2
+
+        podzial(wierz1, wierz12, wierz13, wierz14, n-1)
+        podzial(wierz12, wierz2, wierz23, wierz24, n-1)
+        podzial(wierz13, wierz23, wierz3, wierz34, n-1)
+        podzial(wierz14, wierz24, wierz34, wierz4, n-1)
+
+    else:
+        czworoscian_foremny(wierz1, wierz2, wierz3, wierz4)
+
+
+def render(time, N):
     wierzcholki = [
         [-math.sqrt(3) / 2, -0.5, 0.0],     # A
         [math.sqrt(3) / 2, -0.5, 0.0],      # B
@@ -45,11 +87,21 @@ def render(time):
     glClear(GL_COLOR_BUFFER_BIT)
     glClear(GL_DEPTH_BUFFER_BIT)
 
-    czworoscian_foremny(wierzcholki[0], wierzcholki[1], wierzcholki[2], wierzcholki[3])
+    podzial(wierzcholki[0], wierzcholki[1], wierzcholki[2], wierzcholki[3], N)
 
     glFlush()
 
 def main():
+    ok = 0
+    print("Algorytm konstrukcji Piramidy Sierpinskiego przyjmuje jako parametr liczbe podzialow czworoscianu foremnego na mniejsze czworosciany foremne")
+    while(ok == 0):
+        print("Podaj liczbe podzialow:")
+        N = int(input())
+        if(N < 0):
+            print("Nieprawidlowa liczba podzialow. Prosze sprobowac ponownie!")
+        else:
+            ok = 1
+
     if not glfwInit():
         sys.exit(-1)
 
@@ -63,7 +115,7 @@ def main():
 
     startup()
     while not glfwWindowShouldClose(window):
-        render(glfwGetTime())
+        render(glfwGetTime(), N)
         glfwSwapBuffers(window)
         glfwWaitEvents()
     shutdown()
