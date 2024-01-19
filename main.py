@@ -7,54 +7,45 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 def startup():
-    glClearColor(0.5, 0.5, 0.5, 1.0)
+    glClearColor(0.0, 0.0, 0.0,  1.0)
     glEnable(GL_DEPTH_TEST)
-
 
 def shutdown():
     pass
 
-def czworoscian_foremny():
-    wierzcholki = [
-        [0.0, 0.0, math.sqrt(2)],       # A
-        [1.0, 0.0, 0.0],                # B
-        [-0.5, math.sqrt(3)/2, 0.0],    # C
-        [-0.5, -math.sqrt(3)/2, 0.0]    # D
-    ]
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+def trojkat_rownoboczny(wierz1, wierz2, wierz3):
     glBegin(GL_TRIANGLES)
-    #ABC
-    glVertex3f(wierzcholki[0][0], wierzcholki[0][1], wierzcholki[0][2])
-    glVertex3f(wierzcholki[1][0], wierzcholki[1][1], wierzcholki[1][2])
-    glVertex3f(wierzcholki[2][0], wierzcholki[2][1], wierzcholki[2][2])
-    #ABD
-    glVertex3f(wierzcholki[0][0], wierzcholki[0][1], wierzcholki[0][2])
-    glVertex3f(wierzcholki[1][0], wierzcholki[1][1], wierzcholki[1][2])
-    glVertex3f(wierzcholki[3][0], wierzcholki[3][1], wierzcholki[3][2])
-    #ACD
-    glVertex3f(wierzcholki[0][0], wierzcholki[0][1], wierzcholki[0][2])
-    glVertex3f(wierzcholki[2][0], wierzcholki[2][1], wierzcholki[2][2])
-    glVertex3f(wierzcholki[3][0], wierzcholki[3][1], wierzcholki[3][2])
-    #BCD
-    glVertex3f(wierzcholki[1][0], wierzcholki[1][1], wierzcholki[1][2])
-    glVertex3f(wierzcholki[2][0], wierzcholki[2][1], wierzcholki[2][2])
-    glVertex3f(wierzcholki[3][0], wierzcholki[3][1], wierzcholki[3][2])
-
+    glColor(0.0, 0.0, 1.0)
+    glVertex3f(wierz1[0], wierz1[1], wierz1[2])
+    glColor(1.0, 0.0, 1.0)
+    glVertex3f(wierz2[0], wierz2[1], wierz2[2])
+    glColor(1.0, 1.0, 0.0)
+    glVertex3f(wierz3[0], wierz3[1], wierz3[2])
     glEnd()
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-def spin(angle):
-    glRotatef(angle, 1.0, 0.0, 0.0)
-    glRotatef(angle, 0.0, 1.0, 0.0)
-    glRotatef(angle, 0.0, 0.0, 1.0)
+def czworoscian_foremny(wierz1, wierz2, wierz3, wierz4):
+    #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    #ABC
+    trojkat_rownoboczny(wierz1, wierz2, wierz3)
+    #ACD
+    trojkat_rownoboczny(wierz1, wierz3, wierz4)
+    #BCD
+    trojkat_rownoboczny(wierz2, wierz3, wierz4)
+    #ABD
+    trojkat_rownoboczny(wierz1, wierz2, wierz4)
+    #glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
 def render(time):
+    wierzcholki = [
+        [-math.sqrt(3) / 2, -0.5, 0.0],     # A
+        [math.sqrt(3) / 2, -0.5, 0.0],      # B
+        [0.0, 1.0, 0.0],                    # C
+        [0.0, 0.0, -1.0]                    # D
+    ]
     glClear(GL_COLOR_BUFFER_BIT)
     glClear(GL_DEPTH_BUFFER_BIT)
 
-    spin(time * 90 / 3.1415)
-
-    czworoscian_foremny()
+    czworoscian_foremny(wierzcholki[0], wierzcholki[1], wierzcholki[2], wierzcholki[3])
 
     glFlush()
 
