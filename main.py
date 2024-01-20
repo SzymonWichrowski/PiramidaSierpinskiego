@@ -8,10 +8,33 @@ from OpenGL.GLU import *
 
 def startup():
     glClearColor(0.0, 0.0, 0.0,  1.0)
+    update_viewport(None, 1000, 1000)
     glEnable(GL_DEPTH_TEST)
 
 def shutdown():
     pass
+
+def update_viewport(window, width, height):
+    if height == 0:
+        height = 1
+    if width == 0:
+        width = 1
+    aspectRatio = width / height
+
+    glMatrixMode(GL_PROJECTION)
+    glViewport(0,0,width, height)
+    glLoadIdentity()
+
+    zakres = 1.5
+
+    if width <= height:
+        glOrtho(-zakres, zakres, -zakres / aspectRatio, zakres / aspectRatio, zakres, -zakres)
+    else:
+        glOrtho(-zakres * aspectRatio, zakres * aspectRatio, -zakres, zakres, zakres, -zakres)
+
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+
 
 def axes():
     glBegin(GL_LINES)
@@ -103,7 +126,7 @@ def render(time, N):
         [-math.sqrt(3) / 2, -0.5, 0.0],     # A
         [math.sqrt(3) / 2, -0.5, 0.0],      # B
         [0.0, 1.0, 0.0],                    # C
-        [0.0, 0.0, -1.0]                    # D
+        [0.0, 0.0, -math.sqrt(2)]           # D
     ]
     glClear(GL_COLOR_BUFFER_BIT)
     glClear(GL_DEPTH_BUFFER_BIT)
@@ -138,6 +161,7 @@ def main():
         sys.exit(-1)
 
     glfwMakeContextCurrent(window)
+    glfwSetFramebufferSizeCallback(window, update_viewport)
     glfwSwapInterval(1)
 
     startup()
