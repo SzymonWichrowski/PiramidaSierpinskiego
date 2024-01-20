@@ -13,6 +13,26 @@ def startup():
 def shutdown():
     pass
 
+def axes():
+    glBegin(GL_LINES)
+
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f(-5.0, 0.0, 0.0)
+    glVertex3f(5.0, 0.0, 0.0)
+
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0.0, -5.0, 0.0)
+    glVertex3f(0.0, 5.0, 0.0)
+
+    glColor3f(0.0, 1.0, 1.0)
+    glVertex3f(0.0, 0.0, -5.0)
+    glVertex3f(0.0, 0.0, 5.0)
+
+    glEnd()
+
+def spin(kat_obrotu):
+    glRotatef(kat_obrotu, 0.0, 0.0, 1.0)
+
 def trojkat_rownoboczny(wierz1, wierz2, wierz3):
     glBegin(GL_TRIANGLES)
     glColor(0.0, 0.0, 1.0)
@@ -78,6 +98,7 @@ def podzial(wierz1, wierz2, wierz3, wierz4, n):
 
 
 def render(time, N):
+
     wierzcholki = [
         [-math.sqrt(3) / 2, -0.5, 0.0],     # A
         [math.sqrt(3) / 2, -0.5, 0.0],      # B
@@ -86,6 +107,12 @@ def render(time, N):
     ]
     glClear(GL_COLOR_BUFFER_BIT)
     glClear(GL_DEPTH_BUFFER_BIT)
+
+    glLoadIdentity()
+    axes()
+
+    glLoadIdentity()
+    spin(time * 180 / 3.1415)
 
     podzial(wierzcholki[0], wierzcholki[1], wierzcholki[2], wierzcholki[3], N)
 
