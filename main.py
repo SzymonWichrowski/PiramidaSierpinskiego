@@ -15,6 +15,8 @@ vertices = [
 rotate_speed = 0.05
 whichSpin = 0
 
+light_position = [0.0, 0.0, 3.0, 1.0]
+
 def shutdown():
     pygame.quit()
     sys.exit()
@@ -126,6 +128,34 @@ def render(N):
 
     glFlush()
 
+def light():
+    global light_position
+    #zrodla swiatla
+    glLightfv(GL_LIGHT0, GL_POSITION, (5.0, 0.0, 0.0, 0.0))
+    glLightfv(GL_LIGHT1, GL_POSITION,  light_position)
+
+    # Ustawienie koloru światła otoczenia
+    glLightfv(GL_LIGHT0, GL_AMBIENT, (0.0, 0.0, 1.0, 1.0))
+    glLightfv(GL_LIGHT1, GL_AMBIENT, (0.0, 1.0, 0.0, 1.0))
+
+    # Ustawienie koloru światła rozproszonego
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, (1.0, 1.0, 1.0, 1.0))
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, (1.0, 1.0, 1.0, 1.0))
+
+    # Ustawienie koloru światła wypukłego
+    glLightfv(GL_LIGHT0, GL_SPECULAR, (1.0, 1.0, 1.0, 1.0))
+    glLightfv(GL_LIGHT1, GL_SPECULAR, (1.0, 1.0, 1.0, 1.0))
+
+    constant_attenuation = 1.0
+    linear_attenuation = 0.5
+    quadratic_attenuation = 0.0
+
+    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, constant_attenuation)
+    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, linear_attenuation)
+    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, quadratic_attenuation)
+
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
+
 def main():
     ok = 0
     print(
@@ -138,11 +168,16 @@ def main():
         else:
             ok = 1
 
-    global whichSpin
+    global whichSpin, vertices
 
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, pygame.OPENGL | pygame.DOUBLEBUF)
+
+    glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHT0)
+    glEnable(GL_LIGHT1)
+    glEnable(GL_COLOR_MATERIAL)
 
     glEnable(GL_DEPTH_TEST)
     gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
@@ -177,10 +212,12 @@ def main():
         glEnable(GL_DEPTH_TEST)
         glPushMatrix()
         render(N)
+        light()
         glPopMatrix()
 
         pygame.display.flip()
         pygame.time.wait(10)
+
 
 if __name__ == "__main__":
     main()
