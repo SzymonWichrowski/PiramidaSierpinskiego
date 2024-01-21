@@ -15,6 +15,8 @@ vertices = [
 rotate_speed = 0.05
 whichSpin = 0
 
+zoom_speed = 0.2
+
 light_position = [0.0, 0.0, 3.0, 1.0]
 
 texture_surface = pygame.image.load("tekstura.jpg")
@@ -246,6 +248,7 @@ def main():
 
     global whichSpin
     global show_texture
+    global zoom_speed
 
     pygame.init()
     display = (800, 600)
@@ -271,13 +274,13 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     shutdown()
                 if event.key == pygame.K_UP:
-                    glTranslatef(0, 0.2, 0)
+                    glTranslatef(0.0, 0.2, 0.0)
                 if event.key == pygame.K_DOWN:
-                    glTranslatef(0, -0.2, 0)
+                    glTranslatef(0.0, -0.2, 0.0)
                 if event.key == pygame.K_LEFT:
-                    glTranslatef(-0.2, 0, 0)
+                    glTranslatef(-0.2, 0.0, 0.0)
                 if event.key == pygame.K_RIGHT:
-                    glTranslatef(0.2, 0, 0)
+                    glTranslatef(0.2, 0.0, 0.0)
                 if event.key == pygame.K_z:
                     whichSpin = 0
                 if event.key == pygame.K_y:
@@ -286,6 +289,10 @@ def main():
                     whichSpin = 2
                 if event.key == pygame.K_t:
                     show_texture = not show_texture
+                if event.key == pygame.K_EQUALS:
+                    glTranslatef(0.0, 0.0, zoom_speed)
+                if event.key == pygame.K_MINUS:
+                    glTranslatef(0.0, 0.0, -zoom_speed)
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glEnable(GL_DEPTH_TEST)
